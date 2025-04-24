@@ -1,5 +1,4 @@
-import axios from "axios";
-import commonAPI from "./commonAPI";
+import commonAPI from "./CommonAPI";
 import serverURL from "./ServerURL";
 
 
