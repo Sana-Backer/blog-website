@@ -25,6 +25,7 @@ const Profile = () => {
 
   useEffect(() => {
     getUserPost();
+    handleDelete();
   }, []);
 
   const getUserPost = async () => {
@@ -106,8 +107,10 @@ const Profile = () => {
         Authorization: `Bearer ${token}`,
       };
       const res = await deletePostAPI(postId, headers);
-      console.log(res.message);
-      toast.success(res.message || 'Post deleted successfully');
+      toast.success( 'Post deleted successfully');
+      
+      setUserPosts(prevPosts => prevPosts.filter(post => post._id !== postId));
+      
     } catch (err) {
       console.error(err);
       alert(err.response?.data?.error || 'Something went wrong');

@@ -1,14 +1,10 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
-import { loginAPI } from '../Services/AllAPI'; // You should have this API function set up
+import { loginAPI } from '../Services/AllAPI';
 
 const LoginPage = () => {
-  const [loginData, setLoginData] = useState({
-    email: '',
-    password: ''
-  });
-
+  const [loginData, setLoginData] = useState({ email: '', password: '' });
   const [passwordVisible, setPasswordVisible] = useState(false);
   const navigate = useNavigate();
 
@@ -24,16 +20,14 @@ const LoginPage = () => {
     if (email && password) {
       try {
         const result = await loginAPI(loginData);
-        console.log(result);
-
         if (result.status === 200) {
           toast.success(`Welcome back, ${result.data.user.username}!`);
           setLoginData({ email: '', password: '' });
-          navigate('/'); 
           sessionStorage.setItem('user', JSON.stringify(result.data.user));
-            sessionStorage.setItem('token', result.data.token);
+          sessionStorage.setItem('token', result.data.token);
+          navigate('/');
         } else {
-          toast.error(result.response.data);
+          toast.error(result.response.data || 'Invalid credentials');
         }
       } catch (err) {
         toast.error("Login failed. Please try again.");
@@ -44,12 +38,12 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-100 to-blue-100 px-4">
-      <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-lg">
-        <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">Login</h2>
-        <form onSubmit={handleSubmit} className="space-y-5">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-100 to-blue-200 flex items-center justify-center px-4">
+      <div className="max-w-md w-full bg-white p-10 rounded-2xl shadow-2xl">
+        <h2 className="text-4xl font-bold text-center text-indigo-700 mb-8">Login to Your Account</h2>
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label htmlFor="email" className="text-sm font-medium text-gray-700">Email</label>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email Address</label>
             <input
               id="email"
               name="email"
@@ -57,12 +51,12 @@ const LoginPage = () => {
               required
               value={loginData.email}
               onChange={handleChange}
-              className="mt-1 w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm"
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 py-2 px-3"
             />
           </div>
 
           <div>
-            <label htmlFor="password" className="text-sm font-medium text-gray-700">Password</label>
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
             <div className="relative mt-1">
               <input
                 id="password"
@@ -71,12 +65,12 @@ const LoginPage = () => {
                 required
                 value={loginData.password}
                 onChange={handleChange}
-                className="w-full border border-gray-300 rounded-md py-2 px-3 pr-10 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm"
+                className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 py-2 px-3 pr-10"
               />
               <button
                 type="button"
                 onClick={() => setPasswordVisible(!passwordVisible)}
-                className="absolute inset-y-0 right-2 text-sm text-indigo-500"
+                className="absolute right-3 top-2 text-sm text-indigo-600 focus:outline-none"
               >
                 {passwordVisible ? 'Hide' : 'Show'}
               </button>
@@ -85,11 +79,18 @@ const LoginPage = () => {
 
           <button
             type="submit"
-            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-md font-medium transition duration-200"
+            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-md transition duration-200"
           >
             Login
           </button>
         </form>
+
+        <div className="mt-6 text-center text-sm text-gray-600">
+          Don't have an account?{' '}
+          <Link to="/register" className="text-indigo-600 font-semibold hover:underline">
+            Register here
+          </Link>
+        </div>
       </div>
     </div>
   );

@@ -49,98 +49,114 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4 flex items-center justify-center">
-      <div className="max-w-md w-full bg-white p-10 rounded-xl shadow-lg">
-        <h2 className="text-3xl font-extrabold text-center text-gray-900">Register</h2>
-        
-        <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
-          <div>
-            <label htmlFor="username" className="block text-sm font-medium text-gray-700">Username</label>
-            <input
-              id="username"
-              name="username"
-              type="text"
-              required
-              value={userData.username}
-              onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3 shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            />
-          </div>
-
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              required
-              value={userData.email}
-              onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3 shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            />
-          </div>
-
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
-            <div className="relative mt-1 rounded-md shadow-sm">
+      <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 flex items-center justify-center py-12 px-4">
+        <div className="w-full max-w-md bg-white p-10 rounded-2xl shadow-2xl border border-gray-200">
+          <h2 className="text-4xl font-bold text-center text-indigo-700 mb-6 tracking-tight">
+            Register
+          </h2>
+    
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">
+                Username
+              </label>
               <input
-                id="password"
-                name="password"
-                type={passwordVisible ? 'text' : 'password'}
+                id="username"
+                name="username"
+                type="text"
                 required
-                value={userData.password}
+                value={userData.username}
                 onChange={handleChange}
-                className="block w-full border border-gray-300 rounded-md py-2 px-3 pr-10 shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm shadow-sm"
               />
-              <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+            </div>
+    
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                Email
+              </label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                required
+                value={userData.email}
+                onChange={handleChange}
+                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm shadow-sm"
+              />
+            </div>
+    
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                Password
+              </label>
+              <div className="relative">
+                <input
+                  id="password"
+                  name="password"
+                  type={passwordVisible ? 'text' : 'password'}
+                  required
+                  value={userData.password}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm shadow-sm pr-12"
+                />
                 <button
                   type="button"
                   onClick={() => setPasswordVisible(!passwordVisible)}
-                  className="text-gray-400 hover:text-gray-500 focus:outline-none"
+                  className="absolute top-1/2 right-3 -translate-y-1/2 text-sm text-indigo-600 hover:underline"
                 >
                   {passwordVisible ? 'Hide' : 'Show'}
                 </button>
               </div>
             </div>
-          </div>
-
-          <div>
-            <label htmlFor="phonenumber" className="block text-sm font-medium text-gray-700">Phone Number</label>
-            <input
-              id="phonenumber"
-              name="phonenumber"
-              type="tel"
-              required
-              value={userData.phonenumber}
-              onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3 shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            />
-          </div>
-
-          <div>
-            <label htmlFor="country" className="block text-sm font-medium text-gray-700">Country</label>
-            <input
-              id="country"
-              name="country"
-              type="text"
-              required
-              value={userData.country}
-              onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3 shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            />
-          </div>
-
-          <div>
+    
+            <div>
+              <label htmlFor="phonenumber" className="block text-sm font-medium text-gray-700 mb-1">
+                Phone Number
+              </label>
+              <input
+                id="phonenumber"
+                name="phonenumber"
+                type="tel"
+                required
+                value={userData.phonenumber}
+                onChange={handleChange}
+                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm shadow-sm"
+              />
+            </div>
+    
+            <div>
+              <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-1">
+                Country
+              </label>
+              <input
+                id="country"
+                name="country"
+                type="text"
+                required
+                value={userData.country}
+                onChange={handleChange}
+                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm shadow-sm"
+              />
+            </div>
+    
             <button
               type="submit"
-              className="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-md shadow focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg shadow transition duration-200"
             >
               Register
             </button>
+          </form>
+    
+          <div className="mt-6 text-center text-sm text-gray-600">
+            Already have an account?{" "}
+            <a href="/login" className="text-indigo-600 font-semibold hover:underline">
+              Login here
+            </a>
           </div>
-        </form>
+        </div>
       </div>
-    </div>
+    
   );
 };
 
