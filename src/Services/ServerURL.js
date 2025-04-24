@@ -1,3 +1,3 @@
-const SERVERURL = "http://localhost:3000"
+const SERVERURL = "https://blogserver-1.onrender.com"
 
 export default SERVERURL
