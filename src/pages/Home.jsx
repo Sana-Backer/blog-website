@@ -145,7 +145,10 @@ const HomePage = () => {
                 </div>
               ))
             ) : (
-              <p>No posts found!</p>
+             <div className="flex flex-col items-center justify-center h-full text-center text-2xl m-auto text-blue-800">
+                <p>No posts found!</p>
+                <span>Be the first person to speak about this topic. Add your thoughts!</span>
+             </div>
             )}
           </div>
         </div>
