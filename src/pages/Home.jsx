@@ -107,12 +107,17 @@ const HomePage = () => {
               currentPosts.map((post, index) => (
                 <div key={index} className="flex flex-col md:flex-row gap-8 w-250">
                   <div className="md:w-1/2">
-                    <div className="flex items-center gap-2 font-bold text-slate-500 mb-3">
-                      <div className="flex items-center justify-center w-10 h-10 rounded-full overflow-hidden bg-blue-100">
-                        <h1 className="text-2xl font-bold text-white">{post.author.username.charAt(0).toUpperCase()}</h1>
-                      </div>
-                      <span>{post.author.username}</span>
-                    </div>
+                  <div className="flex items-center gap-2 font-bold text-slate-500 mb-3">
+  <div className="flex items-center justify-center w-10 h-10 rounded-full overflow-hidden bg-blue-100">
+    <h1 className="text-2xl font-bold text-white">
+      {post.author?.username
+        ? post.author.username.charAt(0).toUpperCase()
+        : 'D'}
+    </h1>
+  </div>
+  <span>{post.author?.username || "Deleted User"}</span>
+</div>
+
                     <Link href="#" className="block overflow-hidden rounded-2xl">
                       <img
                         src={`${SERVERURL}/uploads/${post.image}`} // Correct image URL
