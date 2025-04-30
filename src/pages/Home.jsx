@@ -1,14 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
-import { Image } from "lucide-react";
 import Footer from "../components/Footer";
 import { Link } from "react-router-dom";
 import { RiShareForwardFill, RiThumbUpFill, RiChat1Fill } from "react-icons/ri";
 import TopPost from "../components/TopPost";
 import { getAllPostsAPI, LikePostsAPI, topPostsAPI } from "../Services/AllAPI";
-import { useState } from "react";
 import SERVERURL from "../Services/ServerURL";
-
 
 const HomePage = () => {
   const [posts, setPosts] = useState([]);
@@ -20,6 +17,8 @@ const HomePage = () => {
   const postsPerPage = 5;
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+  const currentUserId = JSON.parse(sessionStorage.getItem('user'))?._id;
+
   useEffect(() => {
     fetchPosts();
     fetchTopPost();
@@ -28,7 +27,9 @@ const HomePage = () => {
   const fetchPosts = async () => {
     try {
       const postsData = await getAllPostsAPI();
-      setPosts(postsData.data);
+      setPosts(postsData.data || []);  // protect if API returns undefined
+      console.log("Posts fetched:", postsData.data);
+
     } catch (error) {
       setError('Failed to fetch posts');
     }
@@ -48,33 +49,38 @@ const HomePage = () => {
   const likePost = async (id) => {
     try {
       const result = await LikePostsAPI(id);
-      if (result.status === 200) {
-        fetchPosts();
-        fetchTopPost();
-        console.log(result);
-      }
+      console.log(result);
+      
+      // if (result.status === 200) {
+      //   const updatedPost = result.data.post;  // full post
+      //   setPosts((prevPosts) =>
+      //     prevPosts.map((post) =>
+      //       post?._id === updatedPost._id ? updatedPost : post
+      //     )
+      //   );
+        
+      //   console.log("Post liked/unliked:", updatedPost);
+      // }
     } catch (err) {
       console.log(err);
     }
   };
 
+
   const filteredPosts = posts.filter((post) => {
-    const matchesSearch = post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      post.content.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = selectedCategory === "" || post.category.toLowerCase() === selectedCategory.toLowerCase();
+    const matchesSearch = post?.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      post?.content?.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory = selectedCategory === "" || post?.category?.toLowerCase() === selectedCategory.toLowerCase();
     return matchesSearch && matchesCategory;
   });
 
-  // Get posts for the current page
   const currentPosts = filteredPosts.slice((currentPage - 1) * postsPerPage, currentPage * postsPerPage);
 
   return (
     <div className="bg-gray-50 text-gray-900 font-sans">
       <Header />
 
-      {/* Main Blog Section */}
       <main className="mx-auto p-10 grid grid-cols-1 md:grid-cols-4 gap-10">
-        {/* Sidebar */}
         <aside className="md:col-span-1 space-y-8">
           <div>
             <input value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} type="text" placeholder="Search..." className="w-full p-2 border rounded" />
@@ -105,55 +111,67 @@ const HomePage = () => {
           <div className="grid grid-cols-1 gap-16">
             {currentPosts.length > 0 ? (
               currentPosts.map((post, index) => (
-                <div key={index} className="flex flex-col md:flex-row gap-8 w-250">
-                  <div className="md:w-1/2">
-                  <div className="flex items-center gap-2 font-bold text-slate-500 mb-3">
-  <div className="flex items-center justify-center w-10 h-10 rounded-full overflow-hidden bg-blue-100">
-    <h1 className="text-2xl font-bold text-white">
-      {post.author?.username
-        ? post.author.username.charAt(0).toUpperCase()
-        : 'D'}
-    </h1>
-  </div>
-  <span>{post.author?.username || "Deleted User"}</span>
-</div>
+                post ? ( // Protect map if post is undefined
+                  <div key={index} className="flex flex-col md:flex-row gap-8 w-250">
+                    <div className="md:w-1/2">
+                      <div className="flex items-center gap-2 font-bold text-slate-500 mb-3">
+                        <div className="flex items-center justify-center w-10 h-10 rounded-full overflow-hidden bg-blue-100">
+                          <h1 className="text-2xl font-bold text-white">
+                            {post.author?.username
+                              ? post.author.username.charAt(0).toUpperCase()
+                              : 'D'}
+                          </h1>
+                        </div>
+                        <span>{post.author?.username || "Deleted User"}</span>
+                      </div>
 
-                    <Link href="#" className="block overflow-hidden rounded-2xl">
-                      <img
-                        src={`${SERVERURL}/uploads/${post.image}`} // Correct image URL
-                        alt={post.title}
-                        width={800} // Increased image width
-                        height={600} // Increased image height
-                        className="w-full h-auto object-cover hover:scale-110 transition-transform duration-300"
-                      />
-                    </Link>
-                    <div className="flex items-center mt-3 space-x-2">
-                      <button
-                        onClick={() => likePost(post._id)}
-                        className="flex items-center space-x-1 text-blue-600 hover:text-blue-800"
-                      >
-                        <RiThumbUpFill />
-                      </button>
-                      <span className="text-gray-500">{post.likes}</span>
+                      <Link to="#" className="block overflow-hidden rounded-2xl">
+                        <img
+                          src={`${SERVERURL}/uploads/${post?.image}`} // Safe
+                          alt={post?.title}
+                          width={800}
+                          height={600}
+                          className="w-full h-auto object-cover hover:scale-110 transition-transform duration-300"
+                        />
+                      </Link>
+
+                      <div className="flex items-center mt-3 space-x-2">
+                        <button
+                          onClick={() => likePost(post._id)}
+                          className={`flex items-center space-x-1 ${Array.isArray(post.likes) && post.likes.includes(currentUserId)
+                              ? 'text-blue-600'
+                              : 'text-gray-500 hover:text-blue-600'
+                            }`}
+                        >
+                          {Array.isArray(post.likes) && post.likes.includes(currentUserId)
+ ? (
+                            <RiThumbUpFill />
+                          ) : (
+                            <RiThumbUpFill className="opacity-50" />
+                          )}
+                        </button>
+                        <span className="text-gray-500">{Array.isArray(post.likes) ? post.likes.length : 0}</span>
+                      </div>
+                    </div>
+
+                    <div className="md:w-1/2">
+                      <h2 className="text-4xl font-bold mt-13 mb-2 text-slate-800">{post?.title}</h2>
+                      <div className="text-xs text-slate-500 mb-1">
+                        <span className="text-gray-400">{post?.category}</span> •{' '}
+                        <span className="text-gray-400">
+                          {post?.createdAt ? new Date(post.createdAt).toLocaleDateString() : ''}
+                        </span>
+                      </div>
+                      <p className="text-lg text-gray-800">{post?.content}</p>
                     </div>
                   </div>
-                  <div className="md:w-1/2">
-                    <h2 className="text-4xl font-bold mt-13 mb-2 text-slate-800">{post.title}</h2>
-                    <div className="text-xs text-slate-500 mb-1">
-                      <span className="text-gray-400">{post.category}</span> •{' '}
-                      <span className="text-gray-400">
-                        {new Date(post.createdAt).toLocaleDateString()}
-                      </span>
-                    </div>
-                    <p className="text-lg text-gray-800">{post.content}</p>
-                  </div>
-                </div>
+                ) : null
               ))
             ) : (
-             <div className="flex flex-col items-center justify-center h-full text-center text-2xl m-auto text-blue-800">
+              <div className="flex flex-col items-center justify-center h-full text-center text-2xl m-auto text-blue-800">
                 <p>No posts found!</p>
                 <span>Be the first person to speak about this topic. Add your thoughts!</span>
-             </div>
+              </div>
             )}
           </div>
         </div>
@@ -164,8 +182,9 @@ const HomePage = () => {
         {Array.from({ length: Math.ceil(filteredPosts.length / postsPerPage) }).map((_, index) => (
           <button
             key={index}
-            onClick={() => paginate(index + 1)} // Go to the selected page
-            className={`w-8 h-8 flex items-center justify-center rounded border hover:bg-blue-100 ${currentPage === index + 1 ? 'bg-blue-600 text-white' : ''}`}
+            onClick={() => paginate(index + 1)}
+            className={`w-8 h-8 flex items-center justify-center rounded border hover:bg-blue-100 ${currentPage === index + 1 ? 'bg-blue-600 text-white' : ''
+              }`}
           >
             {index + 1}
           </button>

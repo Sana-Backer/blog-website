@@ -37,6 +37,6 @@ export const topPostsAPI = async () => {
     return await commonAPI("GET", `${serverURL}/top-post`);
 };  
 
-export const LikePostsAPI = async (id) => {
-    return await commonAPI("PUT", `${serverURL}/posts/${id}/like`);
+export const LikePostsAPI = async (id, headers) => {
+    return await commonAPI("PUT", `${serverURL}/posts/${id}/like`, headers);
 };
